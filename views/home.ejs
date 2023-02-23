@@ -30,24 +30,20 @@
                         <label for="end">End Time</label>
                         <input type="time" name="end" id="end-time" required />
                     </div>
-
-                    <div class="form-control">
-                        <label for="participants">Participants</label>
-                        <input type="dropdown" name="participants" id="participants-input" required />
-                    </div>
-                    <label for="cars">Participants</label>
-                    <select name="cars" id="cars" multiple>
-                        <option value="volvo">Volvo</option>
-                        <option value="saab">Saab</option>
-                        <option value="opel">Opel</option>
-                        <option value="audi">Audi</option>
-                      </select>
+                    <label for="names">Participants</label>
+                    <select name="snames" id="names" multiple required>
+                        <% for(let i=0; i < names.length; i++) {%>
+                            <option value="<%=names[i]%>">
+                                <%=names[i]%>
+                            </option>
+                            <%} %>
+                    </select>
                     <div class="create--button">
-                        <button type="submit"  name="submit" >Create</button>
+                        <button type="submit" name="submit">Create</button>
                         <!-- <a href="/" onclick="submit">Create</a> -->
                     </div>
-                    
-                    <!-- <input type="submit" placeholder="Create" name="submit"> -->
+
+                            <!-- <input type="submit" placeholder="Create" name="submit"> -->
                 </div>
             </form>
 
@@ -59,11 +55,15 @@
                     <div class="grid-cointainer">
                         <%for(let i=0;i<list.length;i++){%>
                             <div class="box">
-                                <div class="box--time"><%= list[i].stime %> - <%= list[i].etime %></div>
+                                <div class="box--time">
+                                    <%= list[i].stime %> - <%= list[i].etime %>
+                                </div>
                                 <!-- <div class="box--item"></div> -->
-                                <div class="box--item"><%= list[i].participants %></div>
+                                <div class="box--item">
+                                    <%= list[i].participants %>
+                                </div>
                             </div>
-                        <%}%>
+                            <%}%>
                     </div>
                 </div>
             </div>

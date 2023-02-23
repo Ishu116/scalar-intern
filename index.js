@@ -21,40 +21,61 @@ mongoose.connect('mongodb://127.0.0.1:27017/interviewlistDB', { useNewUrlParser:
 const interviewSchema = new mongoose.Schema({
     stime: String,
     etime: String,
-    participants: String
+    participants: Array
 });
 
 const Interview = new mongoose.model("Interview", interviewSchema);
 
-const arrayNames = ["Jainendra", "Amit", "Nandini", "Swarup"];
+const arrayNames = ["Jainendra", "Amit", "Nandini", "Swarup", "Ishu", "Shubhi", "Haripriya", "Meena"];
+
+const selectNames = [];
+
+const flag = false;
 
 
 
 
 app.post('/', (req, res) => {
-    const newInterview = new Interview({
-        stime: req.body.start,
-        etime: req.body.end,
-        participants: String(req.body.cars)
-    });
-    
-    newInterview.save((err) => {
-        if (err) {
-            console.log(err);
-        }
-        else {
-            console.log("Saved!");
-        }
-        
-    })
-    
-    console.log(String(req.body.cars));
+
+    selectNames.push(req.body.snames);
+    const stime = req.body.start;
+    const etime = req.body.end;
+
+    if(stime>=etime){
+        console.log("Enter a valid time");
+    }
+    else{
+        console.log("Done!!!!");
+    }
+
+    if (selectNames.length >= 2) {
+        const newInterview = new Interview({
+            stime: req.body.start,
+            etime: req.body.end,
+            participants: (req.body.snames)
+        });
+
+        newInterview.save((err) => {
+            if (err) {
+                console.log(err);
+            }
+            else {
+                console.log("Saved!");
+            }
+        })
+        // flag = true;
+    }
+    else {
+        console.log("Seclect more than 2");
+    }
 })
 
 app.get('/', function (req, res) {
-    Interview.find({},(err, foundItem)=>{
-        console.log(err);
-        res.render('home', { list: foundItem });
+    Interview.find({}, (err, foundItem) => {
+        if(err){
+            console.log(err);
+        }
+        res.render('home', { list: foundItem, names: arrayNames, flagitem: flag ? "" : "Enter more than 2" });
     })
 })
 
