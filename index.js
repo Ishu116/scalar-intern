@@ -47,15 +47,12 @@ const arrayNames = [
 ];
 
 const selectNames = [];
-
-const flag = false;
+let flag = 0;
 
 app.post("/", (req, res) => {
     selectNames.push(req.body.snames);
     const stime = req.body.start;
     const etime = req.body.end;
-
-    let flag = 0;
 
     Interview.find({}, (err, foundItem) => {
         if (err) {
@@ -69,14 +66,15 @@ app.post("/", (req, res) => {
                 foundList = (item.participants);
                 arrNames = selectNames[0];
                 const found = foundList.some(elem => arrNames.includes(elem));
-                console.log(found);
                 if (found) {
                     flag = 1;
+                    // console.log(flag);
                 }
             }
         })
     });
-    if (flag == 0) {
+
+    if (flag === 0) {
         if (selectNames.length >= 2 && stime < etime) {
             const newInterview = new Interview({
                 stime: req.body.start,
@@ -104,104 +102,11 @@ app.post("/", (req, res) => {
             });
         }
     }
-    else {
+    else{
         console.log("Participant not available");
     }
-
-
-    /////////////////////////////////////////////////////
-
-    //     if (selectNames.length >= 2 && stime < etime) {
-    //         const newInterview = new Interview({
-    //             stime: req.body.start,
-    //             etime: req.body.end,
-    //             participants: req.body.snames,
-    //         });
-
-    //         newInterview.save((err) => {
-    //             if (err) {
-    //                 console.log(err);
-    //             } else {
-    //                 console.log("Saved!");
-
-    //                 Interview.find({}, (err, foundItem) => {
-    //                     if (err) {
-    //                         console.log(err);
-    //                     }
-    //                     res.render("home", {
-    //                         list: foundItem,
-    //                         names: arrayNames,
-    //                         flagitem: flag ? "" : "Enter more than 2",
-    //                     });
-
-    //                 });
-    //             }
-    //         });
-    //         // flag = true;
-    //     } else {
-    //         console.log("Seclect more than 2 or enter valid time");
-    //     }
 });
 
-// app.post("/", (req, res) => {
-//     selectNames.push(req.body.snames);
-//     const stime = req.body.start;
-//     const etime = req.body.end;
-
-//     Interview.find({}, (err, foundItem) => {
-//         if (err) {
-//             console.log(err);
-//         }
-//         foundItem.map((item) => {
-//             let foundList = [];
-//             let arrNames = [];
-//             if (item.stime <= stime && item.     >= stime || item.stime <= etime && item.etime >= etime) {
-//                 foundList = (item.participants);
-//                 arrNames = selectNames[0];
-//                 const found = foundList.some(elem => arrNames.includes(elem));
-
-//                 if (found) {
-//                     console.log("Foundlist  " + foundList);
-//                     console.log("Arrnames  " + arrNames);
-//                 }
-//             }
-//         })
-//     });
-
-
-
-
-//     if (selectNames.length >= 2 && stime < etime) {
-//         const newInterview = new Interview({
-//             stime: req.body.start,
-//             etime: req.body.end,
-//             participants: req.body.snames,
-//         });
-
-//         newInterview.save((err) => {
-//             if (err) {
-//                 console.log(err);
-//             } else {
-//                 console.log("Saved!");
-
-//                 Interview.find({}, (err, foundItem) => {
-//                     if (err) {
-//                         console.log(err);
-//                     }
-//                     res.render("home", {
-//                         list: foundItem,
-//                         names: arrayNames,
-//                         flagitem: flag ? "" : "Enter more than 2",
-//                     });
-
-//                 });
-//             }
-//         });
-//         // flag = true;
-//     } else {
-//         console.log("Seclect more than 2 or enter valid time");
-//     }
-// });
 
 app.get("/", function (req, res) {
     Interview.find({}, (err, foundItem) => {
