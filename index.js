@@ -1,3 +1,4 @@
+require('dotenv').config()
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
@@ -14,7 +15,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.set("views", path.join(__dirname, "views"));
 app.use(express.static(path.join(__dirname, "public")));
 
-mongoose.connect("mongodb://127.0.0.1:27017/interviewlistDB", {
+
+mongoose.connect(process.env.MONGOURL, {
     useNewUrlParser: true,
 });
 
@@ -121,7 +123,7 @@ app.get("/", function (req, res) {
     });
 });
 
-app.listen(port, function (err) {
+app.listen(process.env.PORT || port, function (err) {
     if (err) {
         console.log("Error in opening sever");
     }
