@@ -43,7 +43,7 @@
                         <!-- <a href="/" onclick="submit">Create</a> -->
                     </div>
 
-                            <!-- <input type="submit" placeholder="Create" name="submit"> -->
+                    <!-- <input type="submit" placeholder="Create" name="submit"> -->
                 </div>
             </form>
 
@@ -55,13 +55,18 @@
                     <div class="grid-cointainer">
                         <%for(let i=0;i<list.length;i++){%>
                             <div class="box">
-                                <div class="box--time">
-                                    <%= list[i].stime %> - <%= list[i].etime %>
-                                </div>
-                                <!-- <div class="box--item"></div> -->
-                                <div class="box--item">
-                                    <%= list[i].participants %>
-                                </div>
+                                <form action="/delete" method="post">
+                                    <div class="box--time">
+                                        <%= list[i].stime %> - <%= list[i].etime %>
+                                    </div>
+                                    <!-- <div class="box--item"></div> -->
+                                    <div name="Student" class="box--item">
+                                        <%= list[i].participants %>
+                                    </div>
+                                    <div>
+                                        <button type="submit" name="submit">del</button>
+                                    </div>
+                                </form>
                             </div>
                             <%}%>
                     </div>

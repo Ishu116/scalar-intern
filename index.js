@@ -56,7 +56,6 @@ app.post("/", (req, res) => {
     const stime = req.body.start;
     const etime = req.body.end;
 
-    // If selectNames is a string, create an array with a single element containing the name entered
     if (typeof selectNames === 'string') {
         selectNames = [selectNames];
     }
@@ -66,7 +65,6 @@ app.post("/", (req, res) => {
         return res.redirect("/");
     }
 
-    // Rest of the code remains the same
     Interview.find({}, (err, foundItem) => {
         if (err) {
             console.log(err);
@@ -84,6 +82,7 @@ app.post("/", (req, res) => {
                 }
             }
         })
+        console.log(flag);
         if (flag === 0) {
             if (selectNames.length >= 2 && stime < etime) {
                 const newInterview = new Interview({
@@ -122,6 +121,10 @@ app.post("/", (req, res) => {
     });
 });
 
+app.post("/delete", (req,res) =>{
+    const Dstudent = req.body.Student;
+    return res.redirect("/");
+})
 
 // app.post("/", (req, res) => {
 //     let selectNames = req.body.snames;
@@ -193,9 +196,6 @@ app.post("/", (req, res) => {
 //         return res.redirect('/');
 //     }
 // });
-
-
-
 
 app.get("/", function (req, res) {
     Interview.find({}, (err, foundItem) => {
