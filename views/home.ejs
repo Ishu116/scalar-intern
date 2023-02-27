@@ -60,11 +60,11 @@
                                         <%= list[i].stime %> - <%= list[i].etime %>
                                     </div>
                                     <!-- <div class="box--item"></div> -->
-                                    <div name="Student" class="box--item">
+                                    <div name="student" class="box--item">
                                         <%= list[i].participants %>
                                     </div>
                                     <div>
-                                        <button type="submit" name="submit">del</button>
+                                        <button type="submit" name="submit" value="<%= list[i]._id %>">Delete</button>
                                     </div>
                                 </form>
                             </div>

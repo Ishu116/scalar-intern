@@ -49,7 +49,7 @@ const arrayNames = [
 ];
 
 
-let flag = 0; 
+let flag = 0;
 
 app.post("/", (req, res) => {
     let selectNames = req.body.snames;
@@ -59,8 +59,7 @@ app.post("/", (req, res) => {
     if (typeof selectNames === 'string') {
         selectNames = [selectNames];
     }
-    if(selectNames.length <= 1)
-    {
+    if (selectNames.length <= 1) {
         console.log("Select more students");
         return res.redirect("/");
     }
@@ -95,7 +94,7 @@ app.post("/", (req, res) => {
                         console.log(err);
                     } else {
                         console.log("Saved!");
-    
+
                         Interview.find({}, (err, foundItem) => {
                             if (err) {
                                 console.log(err);
@@ -105,11 +104,11 @@ app.post("/", (req, res) => {
                                 names: arrayNames,
                                 flagitem: flag ? "" : "Enter more than 2",
                             });
-    
+
                         });
                     }
                 });
-            } 
+            }
             else {
                 console.log("Enter more than 2 names or start time is greater than end time");
                 return res.redirect("/");
@@ -121,10 +120,17 @@ app.post("/", (req, res) => {
     });
 });
 
-app.post("/delete", (req,res) =>{
-    const Dstudent = req.body.Student;
-    return res.redirect("/");
-})
+app.post("/delete", (req, res) => {
+    const meetId = req.body.submit;
+    Interview.findByIdAndRemove(meetId, (err) => {
+        if (err) {
+            console.log(err);
+        }
+        else {
+            res.redirect("/");
+        }
+    });
+});
 
 // app.post("/", (req, res) => {
 //     let selectNames = req.body.snames;
