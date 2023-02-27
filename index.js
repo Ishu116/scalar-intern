@@ -16,7 +16,7 @@ app.set("views", path.join(__dirname, "views"));
 app.use(express.static(path.join(__dirname, "public")));
 
 
-mongoose.connect(process.env.MONGOURL, {
+mongoose.connect("mongodb://127.0.0.1:27017/interviewlistDB", {
     useNewUrlParser: true,
 });
 
@@ -48,14 +48,20 @@ const arrayNames = [
     "Satyam"
 ];
 
-const selectNames = [];
-let flag = 0;
+
+let flag = 0; 
 
 app.post("/", (req, res) => {
-    selectNames.push(req.body.snames);
+    let selectNames = req.body.snames;
     const stime = req.body.start;
     const etime = req.body.end;
 
+    // If selectNames is a string, create an array with a single element containing the name entered
+    if (typeof selectNames === 'string') {
+        selectNames = [selectNames];
+    }
+
+    // Rest of the code remains the same
     Interview.find({}, (err, foundItem) => {
         if (err) {
             console.log(err);
@@ -66,11 +72,11 @@ app.post("/", (req, res) => {
 
             if (item.stime <= stime && item.etime >= stime || item.stime <= etime && item.etime >= etime) {
                 foundList = (item.participants);
-                arrNames = selectNames[0];
+                arrNames = selectNames;
+                console.log(arrNames);
                 const found = foundList.some(elem => arrNames.includes(elem));
                 if (found) {
                     flag = 1;
-                    // console.log(flag);
                 }
             }
         })
@@ -102,12 +108,87 @@ app.post("/", (req, res) => {
                     });
                 }
             });
+        } else {
+            console.log("Enter more than 2 names or start time is greater than end time");
         }
-    }
-    else{
+    } else {
         console.log("Participant not available");
     }
 });
+
+
+// app.post("/", (req, res) => {
+//     let selectNames = req.body.snames;
+//     const stime = req.body.start;
+//     const etime = req.body.end;
+
+//     // If selectNames is a string, create an array with a single element containing the name entered
+//     if (typeof selectNames === 'string') {
+//         selectNames = [selectNames];
+//     }
+
+//     // Reset flag to 0
+//     // flag = 0;
+
+//     Interview.find({}, (err, foundItem) => {
+//         if (err) {
+//             console.log(err);
+//         }
+//         foundItem.map((item) => {
+//             let foundList = [];
+//             let arrNames = [];
+
+//             if (item.stime <= stime && item.etime >= stime || item.stime <= etime && item.etime >= etime) {
+//                 foundList = (item.participants);
+//                 arrNames = selectNames;
+//                 console.log(arrNames);
+//                 const found = foundList.some(elem => arrNames.includes(elem));
+//                 console.log(found);
+//                 if (found) {
+//                     flag = 1;
+//                 }
+//             }
+//         })
+//     });
+
+//     if (flag === 0) {
+//         if (selectNames.length >= 2 && stime < etime) {
+//             const newInterview = new Interview({
+//                 stime: req.body.start,
+//                 etime: req.body.end,
+//                 participants: req.body.snames,
+//             });
+//             newInterview.save((err) => {
+//                 if (err) {
+//                     console.log(err);
+//                 } else {
+//                     console.log("Saved!");
+
+//                     Interview.find({}, (err, foundItem) => {
+//                         if (err) {
+//                             console.log(err);
+//                         }
+//                         res.render("home", {
+//                             list: foundItem,
+//                             names: arrayNames,
+//                             flagitem: flag ? "" : "Enter more than 2",
+//                         });
+
+//                     });
+//                 }
+//             });
+//         } else {
+//             console.log("Enter more than 2 names or start time is greater than end time");
+//             return res.redirect('/');
+
+//         }
+//     } else {
+//         console.log("Participant not available");
+//         return res.redirect('/');
+//     }
+// });
+
+
 
 
 app.get("/", function (req, res) {
