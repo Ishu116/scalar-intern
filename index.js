@@ -60,6 +60,11 @@ app.post("/", (req, res) => {
     if (typeof selectNames === 'string') {
         selectNames = [selectNames];
     }
+    if(selectNames.length <= 1)
+    {
+        console.log("Select more students");
+        return res.redirect("/");
+    }
 
     // Rest of the code remains the same
     Interview.find({}, (err, foundItem) => {
@@ -73,47 +78,48 @@ app.post("/", (req, res) => {
             if (item.stime <= stime && item.etime >= stime || item.stime <= etime && item.etime >= etime) {
                 foundList = (item.participants);
                 arrNames = selectNames;
-                console.log(arrNames);
                 const found = foundList.some(elem => arrNames.includes(elem));
                 if (found) {
                     flag = 1;
                 }
             }
         })
-    });
-
-    if (flag === 0) {
-        if (selectNames.length >= 2 && stime < etime) {
-            const newInterview = new Interview({
-                stime: req.body.start,
-                etime: req.body.end,
-                participants: req.body.snames,
-            });
-            newInterview.save((err) => {
-                if (err) {
-                    console.log(err);
-                } else {
-                    console.log("Saved!");
-
-                    Interview.find({}, (err, foundItem) => {
-                        if (err) {
-                            console.log(err);
-                        }
-                        res.render("home", {
-                            list: foundItem,
-                            names: arrayNames,
-                            flagitem: flag ? "" : "Enter more than 2",
+        if (flag === 0) {
+            if (selectNames.length >= 2 && stime < etime) {
+                const newInterview = new Interview({
+                    stime: req.body.start,
+                    etime: req.body.end,
+                    participants: req.body.snames,
+                });
+                newInterview.save((err) => {
+                    if (err) {
+                        console.log(err);
+                    } else {
+                        console.log("Saved!");
+    
+                        Interview.find({}, (err, foundItem) => {
+                            if (err) {
+                                console.log(err);
+                            }
+                            return res.render("home", {
+                                list: foundItem,
+                                names: arrayNames,
+                                flagitem: flag ? "" : "Enter more than 2",
+                            });
+    
                         });
-
-                    });
-                }
-            });
+                    }
+                });
+            } 
+            else {
+                console.log("Enter more than 2 names or start time is greater than end time");
+                return res.redirect("/");
+            }
         } else {
-            console.log("Enter more than 2 names or start time is greater than end time");
+            console.log("Participant not available");
+            return res.redirect("/");
         }
-    } else {
-        console.log("Participant not available");
-    }
+    });
 });
 
 
