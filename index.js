@@ -16,7 +16,7 @@ app.set("views", path.join(__dirname, "views"));
 app.use(express.static(path.join(__dirname, "public")));
 
 
-mongoose.connect("mongodb://127.0.0.1:27017/interviewlistDB", {
+mongoose.connect(process.env.MONGOURL, {
     useNewUrlParser: true,
 });
 
@@ -63,6 +63,10 @@ app.post("/", (req, res) => {
         console.log("Select more students");
         return res.redirect("/");
     }
+    if (stime > etime) {
+        console.log("Select correct time");
+        return res.redirect("/");
+    }
 
     Interview.find({}, (err, foundItem) => {
         if (err) {
@@ -81,38 +85,31 @@ app.post("/", (req, res) => {
                 }
             }
         })
-        console.log(flag);
         if (flag === 0) {
-            if (selectNames.length >= 2 && stime < etime) {
-                const newInterview = new Interview({
-                    stime: req.body.start,
-                    etime: req.body.end,
-                    participants: req.body.snames,
-                });
-                newInterview.save((err) => {
-                    if (err) {
-                        console.log(err);
-                    } else {
-                        console.log("Saved!");
+            const newInterview = new Interview({
+                stime: req.body.start,
+                etime: req.body.end,
+                participants: req.body.snames,
+            });
+            newInterview.save((err) => {
+                if (err) {
+                    console.log(err);
+                } else {
+                    console.log("Saved!");
 
-                        Interview.find({}, (err, foundItem) => {
-                            if (err) {
-                                console.log(err);
-                            }
-                            return res.render("home", {
-                                list: foundItem,
-                                names: arrayNames,
-                                flagitem: flag ? "" : "Enter more than 2",
-                            });
-
+                    Interview.find({}, (err, foundItem) => {
+                        if (err) {
+                            console.log(err);
+                        }
+                        return res.render("home", {
+                            list: foundItem,
+                            names: arrayNames,
+                            flagitem: flag ? "" : "Enter more than 2",
                         });
-                    }
-                });
-            }
-            else {
-                console.log("Enter more than 2 names or start time is greater than end time");
-                return res.redirect("/");
-            }
+
+                    });
+                }
+            });
         } else {
             console.log("Participant not available");
             return res.redirect("/");
@@ -211,7 +208,6 @@ app.get("/", function (req, res) {
         res.render("home", {
             list: foundItem,
             names: arrayNames,
-            flagitem: flag ? "" : "Enter more than 2",
         });
     });
 });
